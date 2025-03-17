@@ -1,0 +1,35 @@
+{
+  "name": "molibdenius/cqrs-bundle",
+  "description": "CQRS bundle",
+  "type": "symfony-bundle",
+  "require": {
+    "symfony/http-kernel": "7.3.x-dev",
+    "molibdenius/cqrs": "dev-development",
+    "symfony/dependency-injection": "7.3.x-dev",
+    "symfony/config": "7.3.x-dev",
+    "spiral/roadrunner-jobs": "4.x-dev",
+    "spiral/roadrunner-http": "3.x-dev",
+    "nyholm/psr7": "^1.8@dev",
+    "symfony/routing": "7.3.x-dev",
+    "roadrunner-php/app-logger": "1.x-dev",
+    "spiral/roadrunner": "^2024.3",
+    "spiral/roadrunner-worker": "3.x-dev",
+    "spiral/goridge": "4.x-dev",
+    "symfony/console": "7.3.x-dev",
+    "symfony/process": "7.3.x-dev",
+    "psr/container": "^2.0@dev"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Molibdenius\\CQRSBundle\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "molibdenius",
+      "email": "molibdenius@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev"
+}
