@@ -5,9 +5,12 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use molibdenius\CQRS\Router\AttributeRouteHandlerLoader;
 use molibdenius\CQRS\Router\Router;
+use Psr\EventDispatcher\EventDispatcherInterface as PsrEventDispatcherInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface as EventDispatcherInterfaceComponentAlias;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Loader\AttributeDirectoryLoader;
 use Symfony\Component\Routing\Loader\AttributeFileLoader;
@@ -19,9 +22,9 @@ use Symfony\Component\Routing\Loader\Psr4DirectoryLoader;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Symfony\Component\Routing\RequestContextAwareInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 return static function (ContainerConfigurator $container) {
-    $env = $_ENV['APP_ENV'];
     $container->services()
         ->set('file_locator', FileLocator::class)
         ->args([
@@ -31,36 +34,36 @@ return static function (ContainerConfigurator $container) {
         ->set('routing.loader.yml', YamlFileLoader::class)
         ->args([
             service('file_locator'),
-            $env,
+            env('APP_ENV'),
         ])
         ->tag('routing.loader')
         ->set('routing.loader.php', PhpFileLoader::class)
         ->args([
             service('file_locator'),
-            $env,
+            env('APP_ENV'),
         ])
         ->tag('routing.loader')
         ->set('routing.loader.glob', GlobFileLoader::class)
         ->args([
             service('file_locator'),
-            $env,
+            env('APP_ENV'),
         ])
         ->tag('routing.loader')
         ->set('routing.loader.directory', DirectoryLoader::class)
         ->args([
             service('file_locator'),
-            $env,
+            env('APP_ENV'),
         ])
         ->tag('routing.loader')
         ->set('routing.loader.container', ContainerLoader::class)
         ->args([
             tagged_locator('routing.route_loader'),
-            $env,
+            env('APP_ENV'),
         ])
         ->tag('routing.loader')
         ->set('routing.loader.attribute', AttributeRouteHandlerLoader::class)
         ->args([
-            $env,
+            env('APP_ENV'),
         ])
         ->tag('routing.loader', ['priority' => -10])
         ->set('routing.loader.attribute.directory', AttributeDirectoryLoader::class)
@@ -96,5 +99,12 @@ return static function (ContainerConfigurator $container) {
         ->alias(Router::class, 'router')
         ->alias(UrlGeneratorInterface::class, 'router')
         ->alias(UrlMatcherInterface::class, 'router')
-        ->alias(RequestContextAwareInterface::class, 'router');
+        ->alias(RequestContextAwareInterface::class, 'router')
+        ->set('event_dispatcher', EventDispatcher::class)
+        ->public()
+        ->tag('container.hot_path')
+        ->tag('event_dispatcher.dispatcher', ['name' => 'event_dispatcher'])
+        ->alias(EventDispatcherInterfaceComponentAlias::class, 'event_dispatcher')
+        ->alias(EventDispatcherInterface::class, 'event_dispatcher')
+        ->alias(PsrEventDispatcherInterface::class, 'event_dispatcher');
 };

@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-#[AsCommand(name: 'app:rr_install', description: 'Installation RoadRunner')]
+#[AsCommand(name: 'cqrs:rr_install', description: 'Installation RoadRunner')]
 class RoadRunnerInstallationCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output): int

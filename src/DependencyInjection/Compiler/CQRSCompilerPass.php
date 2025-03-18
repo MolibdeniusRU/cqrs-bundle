@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Molibdenius\CQRSBundle\DependencyInjection\Compiler;
 
 use Exception;
-use molibdenius\CQRS\Bus\ActionBusInterface;
 use molibdenius\CQRS\Component;
 use molibdenius\CQRS\Handler\Handler;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,7 +23,7 @@ class CQRSCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): void
     {
-        $phpLoader = new PhpFileLoader($container, new FileLocator(\dirname(__DIR__) . '/Resources/config'));
+        $phpLoader = new PhpFileLoader($container, new FileLocator(\dirname(__DIR__, 2) . '/Resources/config'));
 
         $components = [
             Component::Environment,
@@ -35,7 +35,6 @@ class CQRSCompilerPass implements CompilerPassInterface
             Component::PSR7Worker,
             Component::Consumer,
             Component::Router,
-            Component::EntityManager,
             Component::ActionBus,
             Component::QueueDispatcher,
             Component::HttpDispatcher,
@@ -47,6 +46,8 @@ class CQRSCompilerPass implements CompilerPassInterface
             },
             $components
         );
+
+        $container->registerForAutoconfiguration(Command::class)->addTag('console.command');
 
         $this->prepareActionBus($container);
     }
@@ -65,11 +66,11 @@ class CQRSCompilerPass implements CompilerPassInterface
             return [$handler => new Reference($handler)];
         }, $handlersIds));
 
-        if (!$container->hasDefinition(ActionBusInterface::class)) {
-            throw new ServiceNotFoundException(ActionBusInterface::class);
+        if (!$container->hasDefinition(Component::ActionBus->value)) {
+            throw new ServiceNotFoundException(Component::ActionBus->value);
         }
 
-        $actionBus = $container->getDefinition(ActionBusInterface::class);
+        $actionBus = $container->getDefinition(Component::ActionBus->value);
         $actionBus
             ->replaceArgument(0, $handlers)
             ->addMethodCall('registerHandlers', [$handlersIds]);

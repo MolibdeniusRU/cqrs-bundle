@@ -17,7 +17,9 @@
     "spiral/goridge": "4.x-dev",
     "symfony/console": "7.3.x-dev",
     "symfony/process": "7.3.x-dev",
-    "psr/container": "^2.0@dev"
+    "psr/container": "^2.0@dev",
+    "symfony/expression-language": "7.3.x-dev",
+    "symfony/runtime": "7.3.x-dev"
   },
   "license": "MIT",
   "autoload": {
@@ -31,5 +33,10 @@
       "email": "molibdenius@gmail.com"
     }
   ],
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "config": {
+    "allow-plugins": {
+      "symfony/runtime": true
+    }
+  }
 }
