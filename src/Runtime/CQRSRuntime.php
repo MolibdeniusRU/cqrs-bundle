@@ -3,10 +3,10 @@
 namespace Molibdenius\CQRSBundle\Runtime;
 
 use molibdenius\CQRS\CQRSKernelInterface;
-use Symfony\Component\Runtime\GenericRuntime;
 use Symfony\Component\Runtime\RunnerInterface;
+use Symfony\Component\Runtime\SymfonyRuntime;
 
-class CQRSRuntime extends GenericRuntime
+class CQRSRuntime extends SymfonyRuntime
 {
     public function getRunner(?object $application): RunnerInterface
     {
